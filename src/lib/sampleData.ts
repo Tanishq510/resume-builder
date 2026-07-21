@@ -1,0 +1,136 @@
+import { ResumeData } from "@/types/resume";
+
+export const emptyResume: ResumeData = {
+  personalInfo: {
+    fullName: "",
+    jobTitle: "",
+    email: "",
+    phone: "",
+    location: "",
+    linkedin: "",
+    website: "",
+    summary: "",
+  },
+  experience: [],
+  education: [],
+  skills: [],
+  projects: [],
+};
+
+export const sampleResume: ResumeData = {
+  personalInfo: {
+    fullName: "Jordan Lee",
+    jobTitle: "Software Engineer",
+    email: "jordan.lee@email.com",
+    phone: "(555) 123-4567",
+    location: "Austin, TX",
+    linkedin: "linkedin.com/in/jordanlee",
+    website: "jordanlee.dev",
+    summary:
+      "Software engineer with 8+ years building and scaling web applications across fintech and e-commerce. Skilled in TypeScript, React, Node.js, and distributed systems, with a track record of leading teams, shipping high-impact features, and cutting infrastructure costs.",
+  },
+  experience: [
+    {
+      id: "exp-1",
+      company: "Northwind Technologies",
+      role: "Senior Software Engineer",
+      location: "Austin, TX",
+      startDate: "Jun 2022",
+      endDate: "",
+      current: true,
+      bullets: [
+        "Led migration of legacy monolith to microservices, reducing average API response time by 40% and deployment time from 45 to 6 minutes",
+        "Built and shipped a customer-facing analytics dashboard used by 10,000+ active users, driving a 22% increase in weekly retention",
+        "Mentored 3 junior engineers and introduced code review standards adopted team-wide, cutting production incidents by 30%",
+        "Designed and rolled out a feature-flagging system that let product teams ship experiments without a full release cycle",
+      ],
+    },
+    {
+      id: "exp-2",
+      company: "Bluepeak Software",
+      role: "Software Engineer",
+      location: "Remote",
+      startDate: "Jul 2019",
+      endDate: "May 2022",
+      current: false,
+      bullets: [
+        "Developed REST APIs in Node.js serving 2M+ requests per day with 99.95% uptime",
+        "Reduced CI pipeline runtime by 35% by parallelizing test suites and caching dependencies",
+        "Collaborated with product and design teams to launch 6 major features, including a real-time notifications system",
+        "Migrated the primary datastore from MongoDB to PostgreSQL with zero downtime, improving query performance by 3x",
+      ],
+    },
+    {
+      id: "exp-3",
+      company: "Cardinal Retail Group",
+      role: "Software Engineer",
+      location: "Chicago, IL",
+      startDate: "Aug 2016",
+      endDate: "Jun 2019",
+      current: false,
+      bullets: [
+        "Built the checkout and payments flow for a platform processing $40M+ in annual transactions",
+        "Implemented automated integration tests that increased coverage from 45% to 85%",
+        "Partnered with the data team to build a recommendation engine that lifted average order value by 8%",
+      ],
+    },
+  ],
+  education: [
+    {
+      id: "edu-1",
+      school: "University of Texas at Austin",
+      degree: "B.S.",
+      field: "Computer Science",
+      location: "Austin, TX",
+      startDate: "2012",
+      endDate: "2016",
+      details: "GPA: 3.8/4.0, Dean's List",
+    },
+    {
+      id: "edu-2",
+      school: "Coursera / DeepLearning.AI",
+      degree: "Certificate",
+      field: "Machine Learning Specialization",
+      location: "Online",
+      startDate: "2021",
+      endDate: "2021",
+      details: "",
+    },
+  ],
+  skills: [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Node.js",
+    "PostgreSQL",
+    "MongoDB",
+    "AWS",
+    "Docker",
+    "Kubernetes",
+    "GraphQL",
+    "REST APIs",
+    "CI/CD",
+    "System Design",
+  ],
+  projects: [
+    {
+      id: "proj-1",
+      name: "Task Flow",
+      link: "github.com/jordanlee/taskflow",
+      bullets: [
+        "Open-source task manager built with Next.js and Postgres, 500+ GitHub stars",
+        "Added real-time collaboration with WebSockets, supporting 50+ concurrent users per board",
+      ],
+    },
+    {
+      id: "proj-2",
+      name: "DevMetrics",
+      link: "github.com/jordanlee/devmetrics",
+      bullets: [
+        "CLI tool that aggregates GitHub and CI data into a weekly engineering health report",
+        "Adopted by 4 teams internally to track deployment frequency and lead time for changes",
+      ],
+    },
+  ],
+};
