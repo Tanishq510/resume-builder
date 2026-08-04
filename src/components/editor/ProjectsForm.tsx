@@ -6,7 +6,11 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
 import { BulletListEditor } from "@/components/editor/BulletListEditor";
 
-export function ProjectsForm() {
+export function ProjectsForm({
+  dragHandle,
+}: {
+  dragHandle?: React.ReactNode;
+}) {
   const projects = useResumeStore((s) => s.resume.projects);
   const addProject = useResumeStore((s) => s.addProject);
   const updateProject = useResumeStore((s) => s.updateProject);
@@ -16,6 +20,7 @@ export function ProjectsForm() {
     <SectionCard
       title="Projects"
       description="Optional. Useful for showcasing side projects, open source work, or portfolio pieces."
+      dragHandle={dragHandle}
       action={
         <button
           type="button"

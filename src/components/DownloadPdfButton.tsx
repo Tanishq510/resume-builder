@@ -14,13 +14,18 @@ function fileNameFor(fullName: string) {
 export function DownloadPdfButton() {
   const resume = useResumeStore((s) => s.resume);
   const templateId = useResumeStore((s) => s.templateId);
+  const sectionOrder = useResumeStore((s) => s.sectionOrder);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleDownload = async () => {
     setIsGenerating(true);
     try {
       const blob = await pdf(
-        <ResumeDocument resume={resume} templateId={templateId} />
+        <ResumeDocument
+          resume={resume}
+          templateId={templateId}
+          sectionOrder={sectionOrder}
+        />
       ).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");

@@ -6,7 +6,11 @@ import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { TextInput } from "@/components/ui/inputs";
 
-export function SkillsForm() {
+export function SkillsForm({
+  dragHandle,
+}: {
+  dragHandle?: React.ReactNode;
+}) {
   const skills = useResumeStore((s) => s.resume.skills);
   const setSkills = useResumeStore((s) => s.setSkills);
   const [draft, setDraft] = useState("");
@@ -27,6 +31,7 @@ export function SkillsForm() {
     <SectionCard
       title="Skills"
       description="List exact keywords from the job description (e.g. 'Project Management' not 'PM') — ATS systems match on exact text."
+      dragHandle={dragHandle}
     >
       <div className="flex gap-2">
         <TextInput

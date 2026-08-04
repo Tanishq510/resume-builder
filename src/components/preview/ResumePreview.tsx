@@ -1,5 +1,7 @@
+import { Fragment } from "react";
 import { ResumeData } from "@/types/resume";
 import { TemplateId, defaultTemplateId } from "@/lib/templates";
+import { SectionId, defaultSectionOrder } from "@/lib/sections";
 import { previewVariants } from "@/components/preview/previewVariants";
 
 function dateRange(start: string, end: string, current: boolean) {
@@ -11,9 +13,11 @@ function dateRange(start: string, end: string, current: boolean) {
 export function ResumePreview({
   resume,
   templateId = defaultTemplateId,
+  sectionOrder = defaultSectionOrder,
 }: {
   resume: ResumeData;
   templateId?: TemplateId;
+  sectionOrder?: SectionId[];
 }) {
   const { personalInfo, experience, education, skills, projects } = resume;
   const v = previewVariants[templateId];
@@ -25,30 +29,9 @@ export function ResumePreview({
     personalInfo.website,
   ].filter(Boolean);
 
-  return (
-    <div
-      id="resume-preview"
-      className={`mx-auto w-full max-w-[8.5in] bg-white text-slate-900 ${v.containerClass}`}
-      style={{ fontFamily: v.fontFamily }}
-    >
-      <header className={v.headerWrapClass}>
-        <h1 className={v.nameClass}>{personalInfo.fullName || "Your Name"}</h1>
-        {personalInfo.jobTitle && (
-          <p className={v.jobTitleClass}>{personalInfo.jobTitle}</p>
-        )}
-        {contactParts.length > 0 && (
-          <p className={v.contactClass}>{contactParts.join("  |  ")}</p>
-        )}
-      </header>
-
-      {personalInfo.summary && (
-        <section className={v.sectionGapClass}>
-          <h2 className={v.sectionTitleClass}>Summary</h2>
-          <p className={v.paragraphClass}>{personalInfo.summary}</p>
-        </section>
-      )}
-
-      {experience.length > 0 && (
+  const sectionRenderers: Record<SectionId, () => React.ReactNode> = {
+    experience: () =>
+      experience.length > 0 && (
         <section className={v.sectionGapClass}>
           <h2 className={v.sectionTitleClass}>Experience</h2>
           <div className="space-y-3">
@@ -81,9 +64,9 @@ export function ResumePreview({
             ))}
           </div>
         </section>
-      )}
-
-      {education.length > 0 && (
+      ),
+    education: () =>
+      education.length > 0 && (
         <section className={v.sectionGapClass}>
           <h2 className={v.sectionTitleClass}>Education</h2>
           <div className="space-y-2">
@@ -108,16 +91,16 @@ export function ResumePreview({
             ))}
           </div>
         </section>
-      )}
-
-      {skills.length > 0 && (
+      ),
+    skills: () =>
+      skills.length > 0 && (
         <section className={v.sectionGapClass}>
           <h2 className={v.sectionTitleClass}>Skills</h2>
           <p className={v.paragraphClass}>{skills.join(" | ")}</p>
         </section>
-      )}
-
-      {projects.length > 0 && (
+      ),
+    projects: () =>
+      projects.length > 0 && (
         <section>
           <h2 className={v.sectionTitleClass}>Projects</h2>
           <div className="space-y-3">
@@ -146,7 +129,35 @@ export function ResumePreview({
             ))}
           </div>
         </section>
+      ),
+  };
+
+  return (
+    <div
+      id="resume-preview"
+      className={`mx-auto w-full max-w-[8.5in] bg-white text-slate-900 ${v.containerClass}`}
+      style={{ fontFamily: v.fontFamily }}
+    >
+      <header className={v.headerWrapClass}>
+        <h1 className={v.nameClass}>{personalInfo.fullName || "Your Name"}</h1>
+        {personalInfo.jobTitle && (
+          <p className={v.jobTitleClass}>{personalInfo.jobTitle}</p>
+        )}
+        {contactParts.length > 0 && (
+          <p className={v.contactClass}>{contactParts.join("  |  ")}</p>
+        )}
+      </header>
+
+      {personalInfo.summary && (
+        <section className={v.sectionGapClass}>
+          <h2 className={v.sectionTitleClass}>Summary</h2>
+          <p className={v.paragraphClass}>{personalInfo.summary}</p>
+        </section>
       )}
+
+      {sectionOrder.map((sectionId) => (
+        <Fragment key={sectionId}>{sectionRenderers[sectionId]()}</Fragment>
+      ))}
     </div>
   );
 }

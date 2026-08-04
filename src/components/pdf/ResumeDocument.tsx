@@ -1,6 +1,8 @@
+import { Fragment } from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { ResumeData } from "@/types/resume";
 import { TemplateId, defaultTemplateId } from "@/lib/templates";
+import { SectionId, defaultSectionOrder } from "@/lib/sections";
 import { PdfVariant, pdfVariants } from "@/components/pdf/pdfVariants";
 
 function createStyles(v: PdfVariant) {
@@ -109,9 +111,11 @@ function dateRange(start: string, end: string, current: boolean) {
 export function ResumeDocument({
   resume,
   templateId = defaultTemplateId,
+  sectionOrder = defaultSectionOrder,
 }: {
   resume: ResumeData;
   templateId?: TemplateId;
+  sectionOrder?: SectionId[];
 }) {
   const { personalInfo, experience, education, skills, projects } = resume;
   const variant = pdfVariants[templateId];
@@ -123,6 +127,93 @@ export function ResumeDocument({
     personalInfo.linkedin,
     personalInfo.website,
   ].filter(Boolean);
+
+  const sectionRenderers: Record<SectionId, () => React.ReactNode> = {
+    experience: () =>
+      experience.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Experience</Text>
+          {experience.map((exp) => (
+            <View key={exp.id} style={styles.entry} wrap={false}>
+              <View style={styles.itemRow}>
+                <Text style={styles.itemTitle}>
+                  {exp.role || "Job Title"}
+                  {exp.company ? `, ${exp.company}` : ""}
+                </Text>
+                <Text style={styles.itemDate}>
+                  {dateRange(exp.startDate, exp.endDate, exp.current)}
+                </Text>
+              </View>
+              {!!exp.location && (
+                <Text style={styles.itemSubtitle}>{exp.location}</Text>
+              )}
+              {exp.bullets
+                .filter(Boolean)
+                .map((bullet, i) => (
+                  <View key={i} style={styles.bulletRow}>
+                    <Text style={styles.bulletDot}>•</Text>
+                    <Text style={styles.bulletText}>{bullet}</Text>
+                  </View>
+                ))}
+            </View>
+          ))}
+        </View>
+      ),
+    education: () =>
+      education.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Education</Text>
+          {education.map((edu) => (
+            <View key={edu.id} style={styles.entry} wrap={false}>
+              <View style={styles.itemRow}>
+                <Text style={styles.itemTitle}>
+                  {[edu.degree, edu.field].filter(Boolean).join(", ") ||
+                    "Degree"}
+                  {edu.school ? ` - ${edu.school}` : ""}
+                </Text>
+                <Text style={styles.itemDate}>
+                  {dateRange(edu.startDate, edu.endDate, false)}
+                </Text>
+              </View>
+              {(edu.location || edu.details) && (
+                <Text style={styles.itemSubtitle}>
+                  {[edu.location, edu.details].filter(Boolean).join(" - ")}
+                </Text>
+              )}
+            </View>
+          ))}
+        </View>
+      ),
+    skills: () =>
+      skills.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Skills</Text>
+          <Text style={styles.paragraph}>{skills.join("  |  ")}</Text>
+        </View>
+      ),
+    projects: () =>
+      projects.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Projects</Text>
+          {projects.map((project) => (
+            <View key={project.id} style={styles.entry} wrap={false}>
+              <Text style={styles.itemTitle}>
+                {project.name || "Project Name"}
+                {project.link ? `  (${project.link})` : ""}
+              </Text>
+              {project.bullets
+                .filter(Boolean)
+                .map((bullet, i) => (
+                  <View key={i} style={styles.bulletRow}>
+                    <Text style={styles.bulletDot}>•</Text>
+                    <Text style={styles.bulletText}>{bullet}</Text>
+                  </View>
+                ))}
+            </View>
+          ))}
+        </View>
+      ),
+  };
 
   return (
     <Document
@@ -147,89 +238,9 @@ export function ResumeDocument({
           </View>
         )}
 
-        {experience.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Experience</Text>
-            {experience.map((exp) => (
-              <View key={exp.id} style={styles.entry} wrap={false}>
-                <View style={styles.itemRow}>
-                  <Text style={styles.itemTitle}>
-                    {exp.role || "Job Title"}
-                    {exp.company ? `, ${exp.company}` : ""}
-                  </Text>
-                  <Text style={styles.itemDate}>
-                    {dateRange(exp.startDate, exp.endDate, exp.current)}
-                  </Text>
-                </View>
-                {!!exp.location && (
-                  <Text style={styles.itemSubtitle}>{exp.location}</Text>
-                )}
-                {exp.bullets
-                  .filter(Boolean)
-                  .map((bullet, i) => (
-                    <View key={i} style={styles.bulletRow}>
-                      <Text style={styles.bulletDot}>•</Text>
-                      <Text style={styles.bulletText}>{bullet}</Text>
-                    </View>
-                  ))}
-              </View>
-            ))}
-          </View>
-        )}
-
-        {education.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Education</Text>
-            {education.map((edu) => (
-              <View key={edu.id} style={styles.entry} wrap={false}>
-                <View style={styles.itemRow}>
-                  <Text style={styles.itemTitle}>
-                    {[edu.degree, edu.field].filter(Boolean).join(", ") ||
-                      "Degree"}
-                    {edu.school ? ` - ${edu.school}` : ""}
-                  </Text>
-                  <Text style={styles.itemDate}>
-                    {dateRange(edu.startDate, edu.endDate, false)}
-                  </Text>
-                </View>
-                {(edu.location || edu.details) && (
-                  <Text style={styles.itemSubtitle}>
-                    {[edu.location, edu.details].filter(Boolean).join(" - ")}
-                  </Text>
-                )}
-              </View>
-            ))}
-          </View>
-        )}
-
-        {skills.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Skills</Text>
-            <Text style={styles.paragraph}>{skills.join("  |  ")}</Text>
-          </View>
-        )}
-
-        {projects.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Projects</Text>
-            {projects.map((project) => (
-              <View key={project.id} style={styles.entry} wrap={false}>
-                <Text style={styles.itemTitle}>
-                  {project.name || "Project Name"}
-                  {project.link ? `  (${project.link})` : ""}
-                </Text>
-                {project.bullets
-                  .filter(Boolean)
-                  .map((bullet, i) => (
-                    <View key={i} style={styles.bulletRow}>
-                      <Text style={styles.bulletDot}>•</Text>
-                      <Text style={styles.bulletText}>{bullet}</Text>
-                    </View>
-                  ))}
-              </View>
-            ))}
-          </View>
-        )}
+        {sectionOrder.map((sectionId) => (
+          <Fragment key={sectionId}>{sectionRenderers[sectionId]()}</Fragment>
+        ))}
       </Page>
     </Document>
   );

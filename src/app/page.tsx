@@ -1,6 +1,6 @@
 "use client";
 
-import { useResumeStore } from "@/store/resumeStore";
+import { useResumeStore, SectionId } from "@/store/resumeStore";
 import { Toolbar } from "@/components/Toolbar";
 import { TemplateSelector } from "@/components/editor/TemplateSelector";
 import { PersonalInfoForm } from "@/components/editor/PersonalInfoForm";
@@ -8,11 +8,24 @@ import { ExperienceForm } from "@/components/editor/ExperienceForm";
 import { EducationForm } from "@/components/editor/EducationForm";
 import { SkillsForm } from "@/components/editor/SkillsForm";
 import { ProjectsForm } from "@/components/editor/ProjectsForm";
+import { ReorderableSection } from "@/components/editor/ReorderableSection";
 import { ResumePreview } from "@/components/preview/ResumePreview";
+
+const SECTION_COMPONENTS: Record<
+  SectionId,
+  React.ComponentType<{ dragHandle?: React.ReactNode }>
+> = {
+  experience: ExperienceForm,
+  education: EducationForm,
+  skills: SkillsForm,
+  projects: ProjectsForm,
+};
 
 export default function Home() {
   const resume = useResumeStore((s) => s.resume);
   const templateId = useResumeStore((s) => s.templateId);
+  const sectionOrder = useResumeStore((s) => s.sectionOrder);
+  const reorderSections = useResumeStore((s) => s.reorderSections);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -21,10 +34,18 @@ export default function Home() {
         <div className="space-y-5">
           <TemplateSelector />
           <PersonalInfoForm />
-          <ExperienceForm />
-          <EducationForm />
-          <SkillsForm />
-          <ProjectsForm />
+          {sectionOrder.map((sectionId, index) => {
+            const SectionComponent = SECTION_COMPONENTS[sectionId];
+            return (
+              <ReorderableSection
+                key={sectionId}
+                index={index}
+                onReorder={reorderSections}
+              >
+                {(dragHandle) => <SectionComponent dragHandle={dragHandle} />}
+              </ReorderableSection>
+            );
+          })}
         </div>
         <div className="lg:sticky lg:top-20 lg:self-start">
           <div className="mb-3 flex items-center justify-between">
@@ -37,7 +58,11 @@ export default function Home() {
           </div>
           <div className="max-h-[calc(100vh-8.5rem)] overflow-y-auto rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-inner">
             <div className="shadow-md">
-              <ResumePreview resume={resume} templateId={templateId} />
+              <ResumePreview
+                resume={resume}
+                templateId={templateId}
+                sectionOrder={sectionOrder}
+              />
             </div>
           </div>
         </div>

@@ -6,7 +6,11 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
 import { BulletListEditor } from "@/components/editor/BulletListEditor";
 
-export function ExperienceForm() {
+export function ExperienceForm({
+  dragHandle,
+}: {
+  dragHandle?: React.ReactNode;
+}) {
   const experience = useResumeStore((s) => s.resume.experience);
   const addExperience = useResumeStore((s) => s.addExperience);
   const updateExperience = useResumeStore((s) => s.updateExperience);
@@ -16,6 +20,7 @@ export function ExperienceForm() {
     <SectionCard
       title="Work experience"
       description="List roles in reverse-chronological order. Start bullets with strong action verbs and quantify results where possible."
+      dragHandle={dragHandle}
       action={
         <button
           type="button"

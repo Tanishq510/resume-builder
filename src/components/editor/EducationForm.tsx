@@ -5,7 +5,11 @@ import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
 
-export function EducationForm() {
+export function EducationForm({
+  dragHandle,
+}: {
+  dragHandle?: React.ReactNode;
+}) {
   const education = useResumeStore((s) => s.resume.education);
   const addEducation = useResumeStore((s) => s.addEducation);
   const updateEducation = useResumeStore((s) => s.updateEducation);
@@ -14,6 +18,7 @@ export function EducationForm() {
   return (
     <SectionCard
       title="Education"
+      dragHandle={dragHandle}
       action={
         <button
           type="button"
