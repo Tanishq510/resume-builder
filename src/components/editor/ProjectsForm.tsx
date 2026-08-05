@@ -5,6 +5,7 @@ import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
 import { BulletListEditor } from "@/components/editor/BulletListEditor";
+import { useHighlightNewest } from "@/hooks/useHighlightNewest";
 
 export function ProjectsForm({
   dragHandle,
@@ -15,6 +16,9 @@ export function ProjectsForm({
   const addProject = useResumeStore((s) => s.addProject);
   const updateProject = useResumeStore((s) => s.updateProject);
   const removeProject = useResumeStore((s) => s.removeProject);
+  const { highlightId, registerRef } = useHighlightNewest(
+    projects.map((p) => p.id)
+  );
 
   return (
     <SectionCard
@@ -38,7 +42,12 @@ export function ProjectsForm({
         {projects.map((project) => (
           <div
             key={project.id}
-            className="rounded-md border border-slate-200 p-4"
+            ref={registerRef(project.id)}
+            className={`rounded-md border p-4 transition-colors duration-300 ${
+              highlightId === project.id
+                ? "border-emerald-400 bg-emerald-50"
+                : "border-slate-200"
+            }`}
           >
             <div className="mb-3 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">

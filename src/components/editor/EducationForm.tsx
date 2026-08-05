@@ -4,6 +4,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
+import { useHighlightNewest } from "@/hooks/useHighlightNewest";
 
 export function EducationForm({
   dragHandle,
@@ -14,6 +15,9 @@ export function EducationForm({
   const addEducation = useResumeStore((s) => s.addEducation);
   const updateEducation = useResumeStore((s) => s.updateEducation);
   const removeEducation = useResumeStore((s) => s.removeEducation);
+  const { highlightId, registerRef } = useHighlightNewest(
+    education.map((e) => e.id)
+  );
 
   return (
     <SectionCard
@@ -36,7 +40,12 @@ export function EducationForm({
         {education.map((edu) => (
           <div
             key={edu.id}
-            className="rounded-md border border-slate-200 p-4"
+            ref={registerRef(edu.id)}
+            className={`rounded-md border p-4 transition-colors duration-300 ${
+              highlightId === edu.id
+                ? "border-emerald-400 bg-emerald-50"
+                : "border-slate-200"
+            }`}
           >
             <div className="mb-3 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">

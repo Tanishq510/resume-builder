@@ -57,6 +57,7 @@ export default function Home() {
               <ReorderableSection
                 key={sectionId}
                 index={index}
+                count={sectionOrder.length}
                 onReorder={reorderSections}
               >
                 {(dragHandle) => <SectionComponent dragHandle={dragHandle} />}

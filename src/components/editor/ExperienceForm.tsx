@@ -5,6 +5,7 @@ import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
 import { BulletListEditor } from "@/components/editor/BulletListEditor";
+import { useHighlightNewest } from "@/hooks/useHighlightNewest";
 
 export function ExperienceForm({
   dragHandle,
@@ -15,6 +16,9 @@ export function ExperienceForm({
   const addExperience = useResumeStore((s) => s.addExperience);
   const updateExperience = useResumeStore((s) => s.updateExperience);
   const removeExperience = useResumeStore((s) => s.removeExperience);
+  const { highlightId, registerRef } = useHighlightNewest(
+    experience.map((e) => e.id)
+  );
 
   return (
     <SectionCard
@@ -38,7 +42,12 @@ export function ExperienceForm({
         {experience.map((exp) => (
           <div
             key={exp.id}
-            className="rounded-md border border-slate-200 p-4"
+            ref={registerRef(exp.id)}
+            className={`rounded-md border p-4 transition-colors duration-300 ${
+              highlightId === exp.id
+                ? "border-emerald-400 bg-emerald-50"
+                : "border-slate-200"
+            }`}
           >
             <div className="mb-3 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
