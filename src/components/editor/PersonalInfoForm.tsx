@@ -13,7 +13,7 @@ export function PersonalInfoForm() {
       title="Personal details"
       description="Contact info at the top of an ATS resume should be plain text — no headers, images, or tables."
     >
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field label="Full name">
           <TextInput
             value={personalInfo.fullName}

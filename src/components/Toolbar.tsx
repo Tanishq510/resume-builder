@@ -18,19 +18,19 @@ export function Toolbar() {
 
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-3">
+      <div className="mx-auto flex max-w-[1400px] flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-center gap-2">
-          <FileText className="text-slate-900" size={20} />
+          <FileText className="shrink-0 text-slate-900" size={20} />
           <div>
             <h1 className="text-sm font-semibold text-slate-900">
-              ATS Resume Builder
+              Free Resume Builder
             </h1>
             <p className="text-xs text-slate-500">
-              Saved automatically in your browser
+              ATS-friendly · No sign-up · Saved automatically in your browser
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <ImportResumeButton />
           <button
             type="button"
