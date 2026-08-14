@@ -7,6 +7,7 @@ import {
   PersonalInfo,
   ProjectEntry,
   ResumeData,
+  SkillGroup,
 } from "@/types/resume";
 import { emptyResume, sampleResume } from "@/lib/sampleData";
 import { TemplateId, defaultTemplateId } from "@/lib/templates";
@@ -33,7 +34,13 @@ interface ResumeStore {
   updateProject: (id: string, entry: Partial<ProjectEntry>) => void;
   removeProject: (id: string) => void;
 
-  setSkills: (skills: string[]) => void;
+  addSkillGroup: () => void;
+  updateSkillGroupName: (id: string, name: string) => void;
+  removeSkillGroup: (id: string) => void;
+  addSkillToGroup: (groupId: string, skill: string) => void;
+  removeSkillFromGroup: (groupId: string, skill: string) => void;
+
+  setAchievements: (achievements: string[]) => void;
 
   sectionOrder: SectionId[];
   reorderSections: (from: number, to: number) => void;
@@ -191,9 +198,67 @@ export const useResumeStore = create<ResumeStore>()(
           isSamplePreview: false,
         })),
 
-      setSkills: (skills) =>
+      addSkillGroup: () =>
         set((state) => ({
-          resume: { ...state.resume, skills },
+          resume: {
+            ...state.resume,
+            skills: [
+              ...state.resume.skills,
+              { id: uuid(), name: "", skills: [] },
+            ],
+          },
+          isSamplePreview: false,
+        })),
+
+      updateSkillGroupName: (id, name) =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            skills: state.resume.skills.map((g) =>
+              g.id === id ? { ...g, name } : g
+            ),
+          },
+          isSamplePreview: false,
+        })),
+
+      removeSkillGroup: (id) =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            skills: state.resume.skills.filter((g) => g.id !== id),
+          },
+          isSamplePreview: false,
+        })),
+
+      addSkillToGroup: (groupId, skill) =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            skills: state.resume.skills.map((g) =>
+              g.id === groupId && !g.skills.includes(skill)
+                ? { ...g, skills: [...g.skills, skill] }
+                : g
+            ),
+          },
+          isSamplePreview: false,
+        })),
+
+      removeSkillFromGroup: (groupId, skill) =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            skills: state.resume.skills.map((g) =>
+              g.id === groupId
+                ? { ...g, skills: g.skills.filter((s) => s !== skill) }
+                : g
+            ),
+          },
+          isSamplePreview: false,
+        })),
+
+      setAchievements: (achievements) =>
+        set((state) => ({
+          resume: { ...state.resume, achievements },
           isSamplePreview: false,
         })),
 
@@ -230,10 +295,47 @@ export const useResumeStore = create<ResumeStore>()(
             projects: parsed.projects.length
               ? parsed.projects
               : state.resume.projects,
+            achievements: parsed.achievements.length
+              ? parsed.achievements
+              : state.resume.achievements,
           },
           isSamplePreview: false,
         })),
     }),
-    { name: "ats-resume-builder-data" }
+    {
+      name: "ats-resume-builder-data",
+      version: 1,
+      migrate: (persistedState) => {
+        const state = persistedState as {
+          resume?: {
+            skills?: unknown;
+            achievements?: unknown;
+          };
+          sectionOrder?: SectionId[];
+        };
+        const resume = state.resume;
+        if (resume) {
+          if (
+            Array.isArray(resume.skills) &&
+            (resume.skills.length === 0 || typeof resume.skills[0] === "string")
+          ) {
+            const flatSkills = resume.skills as string[];
+            resume.skills = flatSkills.length
+              ? [{ id: uuid(), name: "", skills: flatSkills } satisfies SkillGroup]
+              : [{ id: uuid(), name: "", skills: [] } satisfies SkillGroup];
+          }
+          if (!Array.isArray(resume.achievements)) {
+            resume.achievements = [];
+          }
+        }
+        if (
+          state.sectionOrder &&
+          !state.sectionOrder.includes("achievements")
+        ) {
+          state.sectionOrder = [...state.sectionOrder, "achievements"];
+        }
+        return state as ResumeStore;
+      },
+    }
   )
 );

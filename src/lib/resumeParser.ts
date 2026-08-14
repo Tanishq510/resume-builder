@@ -4,14 +4,16 @@ import {
   ExperienceEntry,
   PersonalInfo,
   ProjectEntry,
+  SkillGroup,
 } from "@/types/resume";
 
 export interface ParsedResume {
   personalInfo: Partial<PersonalInfo>;
   experience: ExperienceEntry[];
   education: EducationEntry[];
-  skills: string[];
+  skills: SkillGroup[];
   projects: ProjectEntry[];
+  achievements: string[];
 }
 
 const SECTION_ALIASES = {
@@ -37,6 +39,15 @@ const SECTION_ALIASES = {
     "personal projects",
     "key projects",
     "project experience",
+  ],
+  achievements: [
+    "achievements",
+    "awards",
+    "awards & honors",
+    "honors",
+    "honors & awards",
+    "accomplishments",
+    "certifications",
   ],
 } as const;
 
@@ -481,8 +492,9 @@ function parseEducation(lines: string[]): EducationEntry[] {
     .filter((e): e is EducationEntry => e !== null);
 }
 
-function parseSkills(lines: string[]): string[] {
-  const text = lines.map(stripBullet).join(", ");
+const SKILL_GROUP_LABEL_RE = /^([A-Za-z][A-Za-z0-9 &/+#-]{1,30}):\s*(.+)$/;
+
+function splitSkillList(text: string): string[] {
   return Array.from(
     new Set(
       text
@@ -491,6 +503,42 @@ function parseSkills(lines: string[]): string[] {
         .filter((s) => s.length > 1 && s.length < 40)
     )
   );
+}
+
+/**
+ * Resumes sometimes bucket skills under inline labels ("Languages: Java,
+ * Python"), one per line — treat those as named groups. Everything else
+ * (plain comma/pipe-separated lines) is pooled into a single unlabeled
+ * group so ungrouped resumes still come through as one flat list.
+ */
+function parseSkills(lines: string[]): SkillGroup[] {
+  const groups: SkillGroup[] = [];
+  const ungrouped: string[] = [];
+
+  for (const rawLine of lines) {
+    const line = stripBullet(rawLine);
+    if (!line) continue;
+    const match = line.match(SKILL_GROUP_LABEL_RE);
+    if (match) {
+      const groupSkills = splitSkillList(match[2]);
+      if (groupSkills.length) {
+        groups.push({ id: uuid(), name: cleanLine(match[1]), skills: groupSkills });
+        continue;
+      }
+    }
+    ungrouped.push(line);
+  }
+
+  const flatSkills = splitSkillList(ungrouped.join(", "));
+  if (flatSkills.length) {
+    groups.push({ id: uuid(), name: "", skills: flatSkills });
+  }
+
+  return groups;
+}
+
+function parseAchievements(lines: string[]): string[] {
+  return groupBulletLines(lines);
 }
 
 function parseProjects(lines: string[]): ProjectEntry[] {
@@ -542,5 +590,8 @@ export function parseResumeText(text: string): ParsedResume {
     education: sections.education ? parseEducation(sections.education) : [],
     skills: sections.skills ? parseSkills(sections.skills) : [],
     projects: sections.projects ? parseProjects(sections.projects) : [],
+    achievements: sections.achievements
+      ? parseAchievements(sections.achievements)
+      : [],
   };
 }

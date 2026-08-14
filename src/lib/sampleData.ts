@@ -13,8 +13,9 @@ export const emptyResume: ResumeData = {
   },
   experience: [],
   education: [],
-  skills: [],
+  skills: [{ id: "skill-1", name: "", skills: [] }],
   projects: [],
+  achievements: [],
 };
 
 export const sampleResume: ResumeData = {
@@ -98,20 +99,21 @@ export const sampleResume: ResumeData = {
     },
   ],
   skills: [
-    "JavaScript",
-    "TypeScript",
-    "React",
-    "Next.js",
-    "Node.js",
-    "PostgreSQL",
-    "MongoDB",
-    "AWS",
-    "Docker",
-    "Kubernetes",
-    "GraphQL",
-    "REST APIs",
-    "CI/CD",
-    "System Design",
+    {
+      id: "skill-1",
+      name: "Frontend",
+      skills: ["JavaScript", "TypeScript", "React", "Next.js"],
+    },
+    {
+      id: "skill-2",
+      name: "Backend",
+      skills: ["Node.js", "GraphQL", "REST APIs", "PostgreSQL", "MongoDB"],
+    },
+    {
+      id: "skill-3",
+      name: "Cloud & DevOps",
+      skills: ["AWS", "Docker", "Kubernetes", "CI/CD"],
+    },
   ],
   projects: [
     {
@@ -132,5 +134,10 @@ export const sampleResume: ResumeData = {
         "Adopted by 4 teams internally to track deployment frequency and lead time for changes",
       ],
     },
+  ],
+  achievements: [
+    "Winner, Austin Civic Hackathon 2023 — built a transit-delay predictor used by 3 city agencies",
+    "Speaker, DevSummit 2022 — presented on scaling microservices to an audience of 400+ engineers",
+    "AWS Certified Solutions Architect – Associate",
   ],
 };

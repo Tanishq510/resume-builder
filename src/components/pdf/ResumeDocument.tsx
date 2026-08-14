@@ -99,6 +99,9 @@ function createStyles(v: PdfVariant) {
     entry: {
       marginBottom: v.entryGap,
     },
+    skillGroupName: {
+      fontFamily: v.itemTitle.fontFamily,
+    },
   });
 }
 
@@ -117,7 +120,8 @@ export function ResumeDocument({
   templateId?: TemplateId;
   sectionOrder?: SectionId[];
 }) {
-  const { personalInfo, experience, education, skills, projects } = resume;
+  const { personalInfo, experience, education, skills, projects, achievements } =
+    resume;
   const variant = pdfVariants[templateId];
   const styles = createStyles(variant);
   const contactParts = [
@@ -184,13 +188,24 @@ export function ResumeDocument({
           ))}
         </View>
       ),
-    skills: () =>
-      skills.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Skills</Text>
-          <Text style={styles.paragraph}>{skills.join("  |  ")}</Text>
-        </View>
-      ),
+    skills: () => {
+      const groups = skills.filter((g) => g.skills.length > 0);
+      return (
+        groups.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Skills</Text>
+            {groups.map((group) => (
+              <Text key={group.id} style={styles.paragraph}>
+                {group.name ? (
+                  <Text style={styles.skillGroupName}>{group.name}: </Text>
+                ) : null}
+                {group.skills.join(", ")}
+              </Text>
+            ))}
+          </View>
+        )
+      );
+    },
     projects: () =>
       projects.length > 0 && (
         <View style={styles.section}>
@@ -211,6 +226,20 @@ export function ResumeDocument({
                 ))}
             </View>
           ))}
+        </View>
+      ),
+    achievements: () =>
+      achievements.filter(Boolean).length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Achievements</Text>
+          {achievements
+            .filter(Boolean)
+            .map((achievement, i) => (
+              <View key={i} style={styles.bulletRow}>
+                <Text style={styles.bulletDot}>•</Text>
+                <Text style={styles.bulletText}>{achievement}</Text>
+              </View>
+            ))}
         </View>
       ),
   };

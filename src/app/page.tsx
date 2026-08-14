@@ -9,6 +9,7 @@ import { ExperienceForm } from "@/components/editor/ExperienceForm";
 import { EducationForm } from "@/components/editor/EducationForm";
 import { SkillsForm } from "@/components/editor/SkillsForm";
 import { ProjectsForm } from "@/components/editor/ProjectsForm";
+import { AchievementsForm } from "@/components/editor/AchievementsForm";
 import { ReorderableSection } from "@/components/editor/ReorderableSection";
 import { ResumePreview } from "@/components/preview/ResumePreview";
 import { FaqAccordion } from "@/components/FaqAccordion";
@@ -35,6 +36,7 @@ const SECTION_COMPONENTS: Record<
   education: EducationForm,
   skills: SkillsForm,
   projects: ProjectsForm,
+  achievements: AchievementsForm,
 };
 
 export default function Home() {

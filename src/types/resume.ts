@@ -38,10 +38,17 @@ export interface ProjectEntry {
   bullets: string[];
 }
 
+export interface SkillGroup {
+  id: string;
+  name: string;
+  skills: string[];
+}
+
 export interface ResumeData {
   personalInfo: PersonalInfo;
   experience: ExperienceEntry[];
   education: EducationEntry[];
-  skills: string[];
+  skills: SkillGroup[];
   projects: ProjectEntry[];
+  achievements: string[];
 }

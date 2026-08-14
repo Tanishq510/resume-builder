@@ -19,7 +19,8 @@ export function ResumePreview({
   templateId?: TemplateId;
   sectionOrder?: SectionId[];
 }) {
-  const { personalInfo, experience, education, skills, projects } = resume;
+  const { personalInfo, experience, education, skills, projects, achievements } =
+    resume;
   const v = previewVariants[templateId];
   const contactParts = [
     personalInfo.email,
@@ -92,16 +93,29 @@ export function ResumePreview({
           </div>
         </section>
       ),
-    skills: () =>
-      skills.length > 0 && (
-        <section className={v.sectionGapClass}>
-          <h2 className={v.sectionTitleClass}>Skills</h2>
-          <p className={v.paragraphClass}>{skills.join(" | ")}</p>
-        </section>
-      ),
+    skills: () => {
+      const groups = skills.filter((g) => g.skills.length > 0);
+      return (
+        groups.length > 0 && (
+          <section className={v.sectionGapClass}>
+            <h2 className={v.sectionTitleClass}>Skills</h2>
+            <div className="space-y-1">
+              {groups.map((group) => (
+                <p key={group.id} className={v.paragraphClass}>
+                  {group.name && (
+                    <span className="font-semibold">{group.name}: </span>
+                  )}
+                  {group.skills.join(", ")}
+                </p>
+              ))}
+            </div>
+          </section>
+        )
+      );
+    },
     projects: () =>
       projects.length > 0 && (
-        <section>
+        <section className={v.sectionGapClass}>
           <h2 className={v.sectionTitleClass}>Projects</h2>
           <div className="space-y-3">
             {projects.map((project) => (
@@ -128,6 +142,21 @@ export function ResumePreview({
               </div>
             ))}
           </div>
+        </section>
+      ),
+    achievements: () =>
+      achievements.filter(Boolean).length > 0 && (
+        <section>
+          <h2 className={v.sectionTitleClass}>Achievements</h2>
+          <ul className="list-disc space-y-0.5 pl-4">
+            {achievements
+              .filter(Boolean)
+              .map((achievement, i) => (
+                <li key={i} className={v.bulletClass}>
+                  {achievement}
+                </li>
+              ))}
+          </ul>
         </section>
       ),
   };

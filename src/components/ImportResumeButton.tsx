@@ -35,6 +35,7 @@ export function ImportResumeButton() {
         parsed.education.length && "education",
         parsed.skills.length && "skills",
         parsed.projects.length && "projects",
+        parsed.achievements.length && "achievements",
       ].filter(Boolean) as string[];
 
       if (!parsed.personalInfo.fullName && foundParts.length === 0) {
