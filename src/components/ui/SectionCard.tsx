@@ -8,18 +8,24 @@ export function SectionCard({
   description,
   action,
   dragHandle,
+  tourId,
   children,
 }: {
   title: string;
   description?: string;
   action?: React.ReactNode;
   dragHandle?: React.ReactNode;
+  tourId?: string;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(true);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section
+      data-tour={tourId}
+      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+    >
+
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="flex items-start gap-1.5">
           {dragHandle}

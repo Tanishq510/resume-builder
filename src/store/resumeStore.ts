@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { v4 as uuid } from "uuid";
 import {
+  CertificateEntry,
   EducationEntry,
   ExperienceEntry,
   PersonalInfo,
@@ -39,6 +40,10 @@ interface ResumeStore {
   removeSkillGroup: (id: string) => void;
   addSkillToGroup: (groupId: string, skill: string) => void;
   removeSkillFromGroup: (groupId: string, skill: string) => void;
+
+  addCertificate: () => void;
+  updateCertificate: (id: string, entry: Partial<CertificateEntry>) => void;
+  removeCertificate: (id: string) => void;
 
   setAchievements: (achievements: string[]) => void;
 
@@ -256,6 +261,38 @@ export const useResumeStore = create<ResumeStore>()(
           isSamplePreview: false,
         })),
 
+      addCertificate: () =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            certificates: [
+              ...state.resume.certificates,
+              { id: uuid(), name: "", issuer: "", date: "", link: "" },
+            ],
+          },
+          isSamplePreview: false,
+        })),
+
+      updateCertificate: (id, entry) =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            certificates: state.resume.certificates.map((c) =>
+              c.id === id ? { ...c, ...entry } : c
+            ),
+          },
+          isSamplePreview: false,
+        })),
+
+      removeCertificate: (id) =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            certificates: state.resume.certificates.filter((c) => c.id !== id),
+          },
+          isSamplePreview: false,
+        })),
+
       setAchievements: (achievements) =>
         set((state) => ({
           resume: { ...state.resume, achievements },
@@ -295,6 +332,9 @@ export const useResumeStore = create<ResumeStore>()(
             projects: parsed.projects.length
               ? parsed.projects
               : state.resume.projects,
+            certificates: parsed.certificates.length
+              ? parsed.certificates
+              : state.resume.certificates,
             achievements: parsed.achievements.length
               ? parsed.achievements
               : state.resume.achievements,
@@ -304,12 +344,13 @@ export const useResumeStore = create<ResumeStore>()(
     }),
     {
       name: "ats-resume-builder-data",
-      version: 1,
+      version: 2,
       migrate: (persistedState) => {
         const state = persistedState as {
           resume?: {
             skills?: unknown;
             achievements?: unknown;
+            certificates?: unknown;
           };
           sectionOrder?: SectionId[];
         };
@@ -327,12 +368,30 @@ export const useResumeStore = create<ResumeStore>()(
           if (!Array.isArray(resume.achievements)) {
             resume.achievements = [];
           }
+          if (!Array.isArray(resume.certificates)) {
+            resume.certificates = [];
+          }
         }
         if (
           state.sectionOrder &&
           !state.sectionOrder.includes("achievements")
         ) {
           state.sectionOrder = [...state.sectionOrder, "achievements"];
+        }
+        if (
+          state.sectionOrder &&
+          !state.sectionOrder.includes("certificates")
+        ) {
+          const achievementsIndex = state.sectionOrder.indexOf("achievements");
+          const insertAt =
+            achievementsIndex === -1
+              ? state.sectionOrder.length
+              : achievementsIndex;
+          state.sectionOrder = [
+            ...state.sectionOrder.slice(0, insertAt),
+            "certificates",
+            ...state.sectionOrder.slice(insertAt),
+          ];
         }
         return state as ResumeStore;
       },

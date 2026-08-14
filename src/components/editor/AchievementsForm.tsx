@@ -15,7 +15,7 @@ export function AchievementsForm({
   return (
     <SectionCard
       title="Achievements"
-      description="Optional. Awards, honors, publications, certifications, or other notable accomplishments."
+      description="Optional. Awards, honors, publications, or other notable accomplishments."
       dragHandle={dragHandle}
     >
       {achievements.length === 0 && (

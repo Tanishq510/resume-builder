@@ -120,8 +120,15 @@ export function ResumeDocument({
   templateId?: TemplateId;
   sectionOrder?: SectionId[];
 }) {
-  const { personalInfo, experience, education, skills, projects, achievements } =
-    resume;
+  const {
+    personalInfo,
+    experience,
+    education,
+    skills,
+    projects,
+    certificates,
+    achievements,
+  } = resume;
   const variant = pdfVariants[templateId];
   const styles = createStyles(variant);
   const contactParts = [
@@ -224,6 +231,26 @@ export function ResumeDocument({
                     <Text style={styles.bulletText}>{bullet}</Text>
                   </View>
                 ))}
+            </View>
+          ))}
+        </View>
+      ),
+    certificates: () =>
+      certificates.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Certificates</Text>
+          {certificates.map((cert) => (
+            <View key={cert.id} style={styles.entry} wrap={false}>
+              <View style={styles.itemRow}>
+                <Text style={styles.itemTitle}>
+                  {cert.name || "Certificate Name"}
+                  {cert.issuer ? `, ${cert.issuer}` : ""}
+                </Text>
+                <Text style={styles.itemDate}>{cert.date}</Text>
+              </View>
+              {!!cert.link && (
+                <Text style={styles.itemSubtitle}>{cert.link}</Text>
+              )}
             </View>
           ))}
         </View>

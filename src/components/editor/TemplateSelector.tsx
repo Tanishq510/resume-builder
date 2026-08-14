@@ -13,6 +13,7 @@ export function TemplateSelector() {
     <SectionCard
       title="Format"
       description="All formats are single-column and use standard fonts and headings, so they stay ATS-parseable."
+      tourId="template-selector"
     >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {templateOptions.map((option) => {

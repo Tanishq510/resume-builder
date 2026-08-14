@@ -3,6 +3,7 @@ export type SectionId =
   | "education"
   | "skills"
   | "projects"
+  | "certificates"
   | "achievements";
 
 export const defaultSectionOrder: SectionId[] = [
@@ -10,5 +11,6 @@ export const defaultSectionOrder: SectionId[] = [
   "education",
   "skills",
   "projects",
+  "certificates",
   "achievements",
 ];

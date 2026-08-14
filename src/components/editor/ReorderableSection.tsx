@@ -21,6 +21,7 @@ export function ReorderableSection({
     <div className="flex items-center gap-0.5">
       <button
         type="button"
+        data-tour={index === 0 ? "drag-handle" : undefined}
         aria-label="Drag to reorder section"
         onMouseDown={() => setCanDrag(true)}
         onMouseUp={() => setCanDrag(false)}
@@ -55,6 +56,7 @@ export function ReorderableSection({
 
   return (
     <div
+      data-tour={index === 0 ? "sections" : undefined}
       draggable={canDrag}
       onDragStart={(e) => {
         e.dataTransfer.effectAllowed = "move";

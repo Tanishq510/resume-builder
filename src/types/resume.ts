@@ -44,11 +44,20 @@ export interface SkillGroup {
   skills: string[];
 }
 
+export interface CertificateEntry {
+  id: string;
+  name: string;
+  issuer: string;
+  date: string;
+  link: string;
+}
+
 export interface ResumeData {
   personalInfo: PersonalInfo;
   experience: ExperienceEntry[];
   education: EducationEntry[];
   skills: SkillGroup[];
   projects: ProjectEntry[];
+  certificates: CertificateEntry[];
   achievements: string[];
 }

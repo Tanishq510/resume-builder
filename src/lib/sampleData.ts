@@ -15,6 +15,7 @@ export const emptyResume: ResumeData = {
   education: [],
   skills: [{ id: "skill-1", name: "", skills: [] }],
   projects: [],
+  certificates: [],
   achievements: [],
 };
 
@@ -135,9 +136,24 @@ export const sampleResume: ResumeData = {
       ],
     },
   ],
+  certificates: [
+    {
+      id: "cert-1",
+      name: "AWS Certified Solutions Architect – Associate",
+      issuer: "Amazon Web Services",
+      date: "2023",
+      link: "credly.com/badges/jordanlee-aws-csa",
+    },
+    {
+      id: "cert-2",
+      name: "Certified Kubernetes Administrator (CKA)",
+      issuer: "The Linux Foundation",
+      date: "2022",
+      link: "",
+    },
+  ],
   achievements: [
     "Winner, Austin Civic Hackathon 2023 — built a transit-delay predictor used by 3 city agencies",
     "Speaker, DevSummit 2022 — presented on scaling microservices to an audience of 400+ engineers",
-    "AWS Certified Solutions Architect – Associate",
   ],
 };

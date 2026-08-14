@@ -35,6 +35,7 @@ export function ImportResumeButton() {
         parsed.education.length && "education",
         parsed.skills.length && "skills",
         parsed.projects.length && "projects",
+        parsed.certificates.length && "certificates",
         parsed.achievements.length && "achievements",
       ].filter(Boolean) as string[];
 
@@ -73,7 +74,7 @@ export function ImportResumeButton() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" data-tour="import">
       <input
         ref={inputRef}
         type="file"

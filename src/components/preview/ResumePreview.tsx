@@ -19,8 +19,15 @@ export function ResumePreview({
   templateId?: TemplateId;
   sectionOrder?: SectionId[];
 }) {
-  const { personalInfo, experience, education, skills, projects, achievements } =
-    resume;
+  const {
+    personalInfo,
+    experience,
+    education,
+    skills,
+    projects,
+    certificates,
+    achievements,
+  } = resume;
   const v = previewVariants[templateId];
   const contactParts = [
     personalInfo.email,
@@ -138,6 +145,30 @@ export function ResumePreview({
                         </li>
                       ))}
                   </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      ),
+    certificates: () =>
+      certificates.length > 0 && (
+        <section className={v.sectionGapClass}>
+          <h2 className={v.sectionTitleClass}>Certificates</h2>
+          <div className="space-y-2">
+            {certificates.map((cert) => (
+              <div key={cert.id}>
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className={v.itemTitleClass}>
+                    {cert.name || "Certificate Name"}
+                    {cert.issuer ? `, ${cert.issuer}` : ""}
+                  </span>
+                  <span className={`whitespace-nowrap ${v.itemDateClass}`}>
+                    {cert.date}
+                  </span>
+                </div>
+                {cert.link && (
+                  <div className={v.itemSubtitleClass}>{cert.link}</div>
                 )}
               </div>
             ))}

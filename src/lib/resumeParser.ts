@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import {
+  CertificateEntry,
   EducationEntry,
   ExperienceEntry,
   PersonalInfo,
@@ -13,6 +14,7 @@ export interface ParsedResume {
   education: EducationEntry[];
   skills: SkillGroup[];
   projects: ProjectEntry[];
+  certificates: CertificateEntry[];
   achievements: string[];
 }
 
@@ -40,6 +42,15 @@ const SECTION_ALIASES = {
     "key projects",
     "project experience",
   ],
+  certificates: [
+    "certificates",
+    "certifications",
+    "certification",
+    "licenses",
+    "licenses & certifications",
+    "certifications & licenses",
+    "licenses and certifications",
+  ],
   achievements: [
     "achievements",
     "awards",
@@ -47,7 +58,6 @@ const SECTION_ALIASES = {
     "honors",
     "honors & awards",
     "accomplishments",
-    "certifications",
   ],
 } as const;
 
@@ -60,6 +70,7 @@ const DATE_RANGE_RE = new RegExp(
   `(${DATE_TOKEN})\\s*(?:-|–|—|to)\\s*(${DATE_TOKEN}|present|current)`,
   "i"
 );
+const SINGLE_DATE_RE = new RegExp(`${DATE_TOKEN}`, "i");
 
 const EMAIL_RE = /[\w.+-]+@[\w-]+\.[a-z]{2,}/i;
 const PHONE_RE = /(\+?\(?\d[\d\s().-]{7,}\d\)?)/;
@@ -541,6 +552,46 @@ function parseAchievements(lines: string[]): string[] {
   return groupBulletLines(lines);
 }
 
+function parseCertificates(lines: string[]): CertificateEntry[] {
+  const blocks = groupIntoBlocks(lines);
+  return blocks
+    .map((block) => {
+      const nonEmptyBlock = block.map(cleanLine).filter(Boolean);
+      if (nonEmptyBlock.length === 0) return null;
+
+      const fullText = nonEmptyBlock.join(" ");
+      const link = fullText.match(URL_RE)?.[0] ?? "";
+      const rangeInfo = extractDateRange(fullText);
+      const date = rangeInfo?.start ?? fullText.match(SINGLE_DATE_RE)?.[0] ?? "";
+
+      const headerLine = stripBullet(nonEmptyBlock[0]);
+      const withoutDate = cleanLine(
+        (rangeInfo?.cleaned ?? headerLine).replace(SINGLE_DATE_RE, "")
+      );
+      const withoutLink = cleanLine(withoutDate.replace(URL_RE, ""));
+
+      const parts = withoutLink
+        .split(/,| - | – | — /)
+        .map(cleanLine)
+        .filter(Boolean);
+
+      const name = parts[0] ?? "";
+      const issuer = parts[1] ?? "";
+
+      if (!name) return null;
+
+      const entry: CertificateEntry = {
+        id: uuid(),
+        name,
+        issuer,
+        date: cleanLine(date),
+        link,
+      };
+      return entry;
+    })
+    .filter((c): c is CertificateEntry => c !== null);
+}
+
 function parseProjects(lines: string[]): ProjectEntry[] {
   const blocks = groupIntoBlocks(lines);
   return blocks
@@ -590,6 +641,9 @@ export function parseResumeText(text: string): ParsedResume {
     education: sections.education ? parseEducation(sections.education) : [],
     skills: sections.skills ? parseSkills(sections.skills) : [],
     projects: sections.projects ? parseProjects(sections.projects) : [],
+    certificates: sections.certificates
+      ? parseCertificates(sections.certificates)
+      : [],
     achievements: sections.achievements
       ? parseAchievements(sections.achievements)
       : [],

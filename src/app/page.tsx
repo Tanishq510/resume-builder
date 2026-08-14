@@ -9,10 +9,12 @@ import { ExperienceForm } from "@/components/editor/ExperienceForm";
 import { EducationForm } from "@/components/editor/EducationForm";
 import { SkillsForm } from "@/components/editor/SkillsForm";
 import { ProjectsForm } from "@/components/editor/ProjectsForm";
+import { CertificatesForm } from "@/components/editor/CertificatesForm";
 import { AchievementsForm } from "@/components/editor/AchievementsForm";
 import { ReorderableSection } from "@/components/editor/ReorderableSection";
 import { ResumePreview } from "@/components/preview/ResumePreview";
 import { FaqAccordion } from "@/components/FaqAccordion";
+import { Onboarding } from "@/components/onboarding/Onboarding";
 import { faqItems } from "@/lib/faq";
 
 const faqJsonLd = {
@@ -36,6 +38,7 @@ const SECTION_COMPONENTS: Record<
   education: EducationForm,
   skills: SkillsForm,
   projects: ProjectsForm,
+  certificates: CertificatesForm,
   achievements: AchievementsForm,
 };
 
@@ -47,6 +50,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Onboarding />
       <MobileNotice />
       <Toolbar />
       <main className="mx-auto grid w-full max-w-[1400px] flex-1 grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
@@ -76,7 +80,10 @@ export default function Home() {
               Single column · standard headings · no tables or icons
             </span>
           </div>
-          <div className="max-h-[calc(100vh-8.5rem)] overflow-y-auto rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-inner">
+          <div
+            data-tour="preview"
+            className="max-h-[calc(100vh-8.5rem)] overflow-y-auto rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-inner"
+          >
             <div className="shadow-md">
               <ResumePreview
                 resume={resume}
