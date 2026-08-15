@@ -66,8 +66,8 @@ export default function AboutPage() {
           What you can do here
         </h2>
         <p className="mt-3">
-          Build a resume from scratch, or upload an existing PDF, DOCX, or
-          TXT resume and let the tool prefill your contact details,
+          Build a resume from scratch, or upload an existing PDF, DOCX, TXT,
+          or MD resume and let the tool prefill your contact details,
           experience, education, skills, and projects automatically. Reorder
           sections with drag and drop, switch between a handful of
           ATS-tested templates, and download a polished PDF whenever

@@ -10,7 +10,7 @@ const highlights = [
   },
   {
     icon: Upload,
-    text: "Already have a resume? Upload a PDF, DOCX, or TXT and it'll prefill the form for you.",
+    text: "Already have a resume? Upload a PDF, DOCX, TXT, or MD and it'll prefill the form for you.",
   },
   {
     icon: Download,

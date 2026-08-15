@@ -13,12 +13,17 @@ export async function extractTextFromFile(file: File): Promise<string> {
     return extractFromDocx(file);
   }
 
-  if (name.endsWith(".txt") || file.type === "text/plain") {
+  if (
+    name.endsWith(".txt") ||
+    name.endsWith(".md") ||
+    file.type === "text/plain" ||
+    file.type === "text/markdown"
+  ) {
     return file.text();
   }
 
   throw new Error(
-    "Unsupported file type. Upload a PDF, DOCX, or TXT resume."
+    "Unsupported file type. Upload a PDF, DOCX, TXT, or MD resume."
   );
 }
 

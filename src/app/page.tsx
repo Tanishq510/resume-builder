@@ -171,7 +171,7 @@ export default function Home() {
               <span className="font-medium text-slate-900">
                 Upload and import
               </span>{" "}
-              — already have an old resume? Upload a PDF, DOCX, or TXT file
+              — already have an old resume? Upload a PDF, DOCX, TXT, or MD file
               and this free resume builder will parse it and prefill your
               contact details, experience, education, skills, and projects
               automatically, so you&apos;re not starting from a blank page.

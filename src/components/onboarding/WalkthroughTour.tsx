@@ -45,7 +45,7 @@ const steps: TourStep[] = [
   {
     target: "import",
     title: "Import an existing resume",
-    body: "Already have one? Upload a PDF, DOCX, or TXT and this tool will prefill the form for you.",
+    body: "Already have one? Upload a PDF, DOCX, TXT, or MD and this tool will prefill the form for you.",
     placement: "bottom",
   },
   {

@@ -80,9 +80,28 @@ const URL_RE =
 const BULLET_RE = /^[\s]*[•\-*▪‣●○◦·]\s*/;
 const LOCATION_RE =
   /\b([A-Z][a-zA-Z.]+(?:\s[A-Z][a-zA-Z.]+)*,\s*[A-Z]{2}\b|[Rr]emote|[Hh]ybrid|[Oo]nline|[Oo]n-?site)\b/;
+// Broader than LOCATION_RE (which only matches "City, XX" US state codes) —
+// used only where a whole line must match, so the bigger surface (any
+// "City, Region/Country" pair) doesn't risk misreading ordinary text
+// elsewhere, e.g. "Product Manager, Global Sales" as a location.
+const STANDALONE_LOCATION_RE =
+  /^(?:[A-Z][A-Za-z.'-]*(?:\s[A-Z][A-Za-z.'-]*)*,\s*[A-Z][A-Za-z.'-]*(?:\s[A-Z][A-Za-z.'-]*)*|[Rr]emote|[Hh]ybrid|[Oo]nline|[Oo]n-?site)$/;
 
 function cleanLine(line: string): string {
   return line.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Markdown resumes commonly use "#"/"##" for section headers and "**bold**"
+ * for names/titles — strip that syntax so it doesn't leak into parsed
+ * values (e.g. a "## Experience" header needs to read as "Experience" to
+ * match SECTION_ALIASES).
+ */
+function stripMarkdownSyntax(line: string): string {
+  return line
+    .replace(/^#{1,6}\s*/, "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/__(.+?)__/g, "$1");
 }
 
 function stripBullet(line: string): string {
@@ -127,6 +146,12 @@ function extractLocationFromLine(line: string) {
   };
 }
 
+/** Removes parens left empty after their contents (a date, a link, ...)
+ * were stripped out of a line, e.g. "Acme Corp ()" -> "Acme Corp". */
+function stripEmptyParens(text: string): string {
+  return cleanLine(text.replace(/\(\s*\)/g, ""));
+}
+
 function extractDateRange(text: string) {
   const match = text.match(DATE_RANGE_RE);
   if (!match) return null;
@@ -136,7 +161,7 @@ function extractDateRange(text: string) {
     start: cleanLine(start),
     end: current ? "" : cleanLine(end),
     current,
-    cleaned: cleanLine(text.replace(full, "")),
+    cleaned: stripEmptyParens(text.replace(full, "")),
   };
 }
 
@@ -297,9 +322,9 @@ function splitRoleCompany(headerText: string) {
  */
 function takeStandaloneLocation(lines: string[]) {
   if (!lines.length) return { location: "", rest: lines };
-  const { location, remainder } = extractLocationFromLine(lines[0]);
-  if (location && !remainder && !DATE_RANGE_RE.test(lines[0])) {
-    return { location, rest: lines.slice(1) };
+  const line = cleanLine(lines[0]);
+  if (line && STANDALONE_LOCATION_RE.test(line) && !DATE_RANGE_RE.test(line)) {
+    return { location: line, rest: lines.slice(1) };
   }
   return { location: "", rest: lines };
 }
@@ -348,12 +373,10 @@ function parseExperience(lines: string[]): ExperienceEntry[] {
       // A standalone location line can also appear right before the
       // bullets (after the date), in resumes laid out that way.
       if (!location && bodyLines.length) {
-        const { location: lineLocation, remainder } = extractLocationFromLine(
-          bodyLines[0]
-        );
-        if (lineLocation && !remainder) {
-          location = lineLocation;
-          bodyLines = bodyLines.slice(1);
+        const take = takeStandaloneLocation(bodyLines);
+        if (take.location) {
+          location = take.location;
+          bodyLines = take.rest;
         }
       }
 
@@ -565,10 +588,10 @@ function parseCertificates(lines: string[]): CertificateEntry[] {
       const date = rangeInfo?.start ?? fullText.match(SINGLE_DATE_RE)?.[0] ?? "";
 
       const headerLine = stripBullet(nonEmptyBlock[0]);
-      const withoutDate = cleanLine(
+      const withoutDate = stripEmptyParens(
         (rangeInfo?.cleaned ?? headerLine).replace(SINGLE_DATE_RE, "")
       );
-      const withoutLink = cleanLine(withoutDate.replace(URL_RE, ""));
+      const withoutLink = stripEmptyParens(withoutDate.replace(URL_RE, ""));
 
       const parts = withoutLink
         .split(/,| - | – | — /)
@@ -624,7 +647,7 @@ function parseProjects(lines: string[]): ProjectEntry[] {
 }
 
 export function parseResumeText(text: string): ParsedResume {
-  const lines = text.split(/\r?\n/);
+  const lines = text.split(/\r?\n/).map(stripMarkdownSyntax);
   const { sections, preamble } = splitSections(lines);
 
   const personalInfo = parsePersonalInfo(text, preamble);

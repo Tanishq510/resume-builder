@@ -78,7 +78,7 @@ export function ImportResumeButton() {
       <input
         ref={inputRef}
         type="file"
-        accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+        accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown"
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -90,7 +90,7 @@ export function ImportResumeButton() {
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={status.state === "loading"}
-        title="Upload an existing resume (PDF, DOCX, or TXT) to prefill the form"
+        title="Upload an existing resume (PDF, DOCX, TXT, or MD) to prefill the form"
         className="flex items-center gap-1.5 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status.state === "loading" ? (
