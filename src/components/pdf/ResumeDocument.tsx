@@ -4,6 +4,7 @@ import { ResumeData } from "@/types/resume";
 import { TemplateId, defaultTemplateId } from "@/lib/templates";
 import { SectionId, defaultSectionOrder } from "@/lib/sections";
 import { PdfVariant, pdfVariants } from "@/components/pdf/pdfVariants";
+import { HeadingKey, resolveHeadings } from "@/lib/sectionHeadings";
 
 function createStyles(v: PdfVariant) {
   return StyleSheet.create({
@@ -115,10 +116,12 @@ export function ResumeDocument({
   resume,
   templateId = defaultTemplateId,
   sectionOrder = defaultSectionOrder,
+  headingOverrides = {},
 }: {
   resume: ResumeData;
   templateId?: TemplateId;
   sectionOrder?: SectionId[];
+  headingOverrides?: Partial<Record<HeadingKey, string>>;
 }) {
   const {
     personalInfo,
@@ -131,6 +134,7 @@ export function ResumeDocument({
   } = resume;
   const variant = pdfVariants[templateId];
   const styles = createStyles(variant);
+  const headings = resolveHeadings(headingOverrides);
   const contactParts = [
     personalInfo.email,
     personalInfo.phone,
@@ -143,7 +147,7 @@ export function ResumeDocument({
     experience: () =>
       experience.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Experience</Text>
+          <Text style={styles.sectionTitle}>{headings.experience}</Text>
           {experience.map((exp) => (
             <View key={exp.id} style={styles.entry} wrap={false}>
               <View style={styles.itemRow}>
@@ -173,7 +177,7 @@ export function ResumeDocument({
     education: () =>
       education.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Education</Text>
+          <Text style={styles.sectionTitle}>{headings.education}</Text>
           {education.map((edu) => (
             <View key={edu.id} style={styles.entry} wrap={false}>
               <View style={styles.itemRow}>
@@ -200,7 +204,7 @@ export function ResumeDocument({
       return (
         groups.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Skills</Text>
+            <Text style={styles.sectionTitle}>{headings.skills}</Text>
             {groups.map((group) => (
               <Text key={group.id} style={styles.paragraph}>
                 {group.name ? (
@@ -216,7 +220,7 @@ export function ResumeDocument({
     projects: () =>
       projects.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Projects</Text>
+          <Text style={styles.sectionTitle}>{headings.projects}</Text>
           {projects.map((project) => (
             <View key={project.id} style={styles.entry} wrap={false}>
               <Text style={styles.itemTitle}>
@@ -238,7 +242,7 @@ export function ResumeDocument({
     certificates: () =>
       certificates.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Certificates</Text>
+          <Text style={styles.sectionTitle}>{headings.certificates}</Text>
           {certificates.map((cert) => (
             <View key={cert.id} style={styles.entry} wrap={false}>
               <View style={styles.itemRow}>
@@ -258,7 +262,7 @@ export function ResumeDocument({
     achievements: () =>
       achievements.filter(Boolean).length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Achievements</Text>
+          <Text style={styles.sectionTitle}>{headings.achievements}</Text>
           {achievements
             .filter(Boolean)
             .map((achievement, i) => (
@@ -289,7 +293,7 @@ export function ResumeDocument({
 
         {!!personalInfo.summary && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Summary</Text>
+            <Text style={styles.sectionTitle}>{headings.summary}</Text>
             <Text style={styles.paragraph}>{personalInfo.summary}</Text>
           </View>
         )}

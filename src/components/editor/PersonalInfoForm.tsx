@@ -3,10 +3,13 @@
 import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextArea, TextInput } from "@/components/ui/inputs";
+import { EditableHeading } from "@/components/EditableHeading";
+import { useSectionHeading } from "@/hooks/useSectionHeading";
 
 export function PersonalInfoForm() {
   const personalInfo = useResumeStore((s) => s.resume.personalInfo);
   const updatePersonalInfo = useResumeStore((s) => s.updatePersonalInfo);
+  const summaryHeading = useSectionHeading("summary");
 
   return (
     <SectionCard
@@ -67,14 +70,19 @@ export function PersonalInfoForm() {
         </Field>
       </div>
       <div className="mt-3">
-        <Field label="Professional summary">
-          <TextArea
-            rows={3}
-            value={personalInfo.summary}
-            onChange={(e) => updatePersonalInfo({ summary: e.target.value })}
-            placeholder="2-3 sentences summarizing your experience, key skills, and what you bring to the role."
+        <div className="mb-1">
+          <EditableHeading
+            section="summary"
+            value={summaryHeading}
+            className="text-xs font-medium text-slate-600"
           />
-        </Field>
+        </div>
+        <TextArea
+          rows={3}
+          value={personalInfo.summary}
+          onChange={(e) => updatePersonalInfo({ summary: e.target.value })}
+          placeholder="2-3 sentences summarizing your experience, key skills, and what you bring to the role."
+        />
       </div>
     </SectionCard>
   );

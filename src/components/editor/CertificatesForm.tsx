@@ -4,7 +4,9 @@ import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
+import { EditableHeading } from "@/components/EditableHeading";
 import { useHighlightNewest } from "@/hooks/useHighlightNewest";
+import { useSectionHeading } from "@/hooks/useSectionHeading";
 
 export function CertificatesForm({
   dragHandle,
@@ -18,10 +20,18 @@ export function CertificatesForm({
   const { highlightId, registerRef } = useHighlightNewest(
     certificates.map((c) => c.id)
   );
+  const headingValue = useSectionHeading("certificates");
 
   return (
     <SectionCard
       title="Certificates"
+      titleContent={
+        <EditableHeading
+          section="certificates"
+          value={headingValue}
+          className="text-sm font-semibold text-slate-900"
+        />
+      }
       description="Optional. Professional certifications or licenses relevant to the role."
       dragHandle={dragHandle}
       action={

@@ -3,6 +3,8 @@ import { ResumeData } from "@/types/resume";
 import { TemplateId, defaultTemplateId } from "@/lib/templates";
 import { SectionId, defaultSectionOrder } from "@/lib/sections";
 import { previewVariants } from "@/components/preview/previewVariants";
+import { EditableHeading } from "@/components/EditableHeading";
+import { HeadingKey, resolveHeadings } from "@/lib/sectionHeadings";
 
 function dateRange(start: string, end: string, current: boolean) {
   const endLabel = current ? "Present" : end;
@@ -14,11 +16,14 @@ export function ResumePreview({
   resume,
   templateId = defaultTemplateId,
   sectionOrder = defaultSectionOrder,
+  headingOverrides = {},
 }: {
   resume: ResumeData;
   templateId?: TemplateId;
   sectionOrder?: SectionId[];
+  headingOverrides?: Partial<Record<HeadingKey, string>>;
 }) {
+  const headings = resolveHeadings(headingOverrides);
   const {
     personalInfo,
     experience,
@@ -41,7 +46,11 @@ export function ResumePreview({
     experience: () =>
       experience.length > 0 && (
         <section className={v.sectionGapClass}>
-          <h2 className={v.sectionTitleClass}>Experience</h2>
+          <EditableHeading
+            section="experience"
+            value={headings.experience}
+            className={v.sectionTitleClass}
+          />
           <div className="space-y-3">
             {experience.map((exp) => (
               <div key={exp.id}>
@@ -76,7 +85,11 @@ export function ResumePreview({
     education: () =>
       education.length > 0 && (
         <section className={v.sectionGapClass}>
-          <h2 className={v.sectionTitleClass}>Education</h2>
+          <EditableHeading
+            section="education"
+            value={headings.education}
+            className={v.sectionTitleClass}
+          />
           <div className="space-y-2">
             {education.map((edu) => (
               <div key={edu.id}>
@@ -105,7 +118,11 @@ export function ResumePreview({
       return (
         groups.length > 0 && (
           <section className={v.sectionGapClass}>
-            <h2 className={v.sectionTitleClass}>Skills</h2>
+            <EditableHeading
+              section="skills"
+              value={headings.skills}
+              className={v.sectionTitleClass}
+            />
             <div className="space-y-1">
               {groups.map((group) => (
                 <p key={group.id} className={v.paragraphClass}>
@@ -123,7 +140,11 @@ export function ResumePreview({
     projects: () =>
       projects.length > 0 && (
         <section className={v.sectionGapClass}>
-          <h2 className={v.sectionTitleClass}>Projects</h2>
+          <EditableHeading
+            section="projects"
+            value={headings.projects}
+            className={v.sectionTitleClass}
+          />
           <div className="space-y-3">
             {projects.map((project) => (
               <div key={project.id}>
@@ -154,7 +175,11 @@ export function ResumePreview({
     certificates: () =>
       certificates.length > 0 && (
         <section className={v.sectionGapClass}>
-          <h2 className={v.sectionTitleClass}>Certificates</h2>
+          <EditableHeading
+            section="certificates"
+            value={headings.certificates}
+            className={v.sectionTitleClass}
+          />
           <div className="space-y-2">
             {certificates.map((cert) => (
               <div key={cert.id}>
@@ -178,7 +203,11 @@ export function ResumePreview({
     achievements: () =>
       achievements.filter(Boolean).length > 0 && (
         <section>
-          <h2 className={v.sectionTitleClass}>Achievements</h2>
+          <EditableHeading
+            section="achievements"
+            value={headings.achievements}
+            className={v.sectionTitleClass}
+          />
           <ul className="list-disc space-y-0.5 pl-4">
             {achievements
               .filter(Boolean)
@@ -210,7 +239,11 @@ export function ResumePreview({
 
       {personalInfo.summary && (
         <section className={v.sectionGapClass}>
-          <h2 className={v.sectionTitleClass}>Summary</h2>
+          <EditableHeading
+            section="summary"
+            value={headings.summary}
+            className={v.sectionTitleClass}
+          />
           <p className={v.paragraphClass}>{personalInfo.summary}</p>
         </section>
       )}

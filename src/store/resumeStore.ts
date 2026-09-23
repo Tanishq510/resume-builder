@@ -14,6 +14,7 @@ import { emptyResume, sampleResume } from "@/lib/sampleData";
 import { TemplateId, defaultTemplateId } from "@/lib/templates";
 import { SectionId, defaultSectionOrder } from "@/lib/sections";
 import { ParsedResume } from "@/lib/resumeParser";
+import { HeadingKey } from "@/lib/sectionHeadings";
 
 export type { SectionId } from "@/lib/sections";
 
@@ -22,6 +23,9 @@ interface ResumeStore {
   templateId: TemplateId;
   setTemplateId: (templateId: TemplateId) => void;
   updatePersonalInfo: (info: Partial<PersonalInfo>) => void;
+
+  headingOverrides: Partial<Record<HeadingKey, string>>;
+  setHeadingOverride: (key: HeadingKey, text: string | null) => void;
 
   addExperience: () => void;
   updateExperience: (id: string, entry: Partial<ExperienceEntry>) => void;
@@ -79,6 +83,18 @@ export const useResumeStore = create<ResumeStore>()(
       templateId: defaultTemplateId,
       sectionOrder: defaultSectionOrder,
       setTemplateId: (templateId) => set({ templateId }),
+
+      headingOverrides: {},
+      setHeadingOverride: (key, text) =>
+        set((state) => {
+          const next = { ...state.headingOverrides };
+          if (text === null) {
+            delete next[key];
+          } else {
+            next[key] = text;
+          }
+          return { headingOverrides: next };
+        }),
 
       updatePersonalInfo: (info) =>
         set((state) => ({
@@ -344,7 +360,7 @@ export const useResumeStore = create<ResumeStore>()(
     }),
     {
       name: "ats-resume-builder-data",
-      version: 2,
+      version: 3,
       migrate: (persistedState) => {
         const state = persistedState as {
           resume?: {
@@ -353,6 +369,7 @@ export const useResumeStore = create<ResumeStore>()(
             certificates?: unknown;
           };
           sectionOrder?: SectionId[];
+          headingOverrides?: Partial<Record<HeadingKey, string>>;
         };
         const resume = state.resume;
         if (resume) {
@@ -392,6 +409,9 @@ export const useResumeStore = create<ResumeStore>()(
             "certificates",
             ...state.sectionOrder.slice(insertAt),
           ];
+        }
+        if (!state.headingOverrides || typeof state.headingOverrides !== "object") {
+          state.headingOverrides = {};
         }
         return state as ResumeStore;
       },

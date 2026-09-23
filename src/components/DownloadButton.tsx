@@ -7,6 +7,7 @@ import { useResumeStore } from "@/store/resumeStore";
 import { ResumeDocument } from "@/components/pdf/ResumeDocument";
 import { resumeToMarkdown } from "@/lib/exportMarkdown";
 import { trackEvent } from "@/lib/analytics";
+import { hasCustomHeadings } from "@/lib/sectionHeadings";
 import type { ResumeData } from "@/types/resume";
 
 function baseFileName(fullName: string) {
@@ -40,6 +41,7 @@ export function DownloadButton() {
   const resume = useResumeStore((s) => s.resume);
   const templateId = useResumeStore((s) => s.templateId);
   const sectionOrder = useResumeStore((s) => s.sectionOrder);
+  const headingOverrides = useResumeStore((s) => s.headingOverrides);
   const [isGenerating, setIsGenerating] = useState(false);
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,6 +71,7 @@ export function DownloadButton() {
           resume={resume}
           templateId={templateId}
           sectionOrder={sectionOrder}
+          headingOverrides={headingOverrides}
         />
       ).toBlob();
       downloadBlob(blob, `${baseFileName(resume.personalInfo.fullName)}-resume.pdf`);
@@ -76,6 +79,7 @@ export function DownloadButton() {
         template: templateId,
         method: "pdf",
         sections_filled: countFilledSections(resume),
+        headings_customized: hasCustomHeadings(headingOverrides),
       });
     } finally {
       setIsGenerating(false);
@@ -84,7 +88,7 @@ export function DownloadButton() {
 
   const handleDownloadMarkdown = () => {
     setOpen(false);
-    const markdown = resumeToMarkdown(resume, sectionOrder);
+    const markdown = resumeToMarkdown(resume, sectionOrder, headingOverrides);
     downloadBlob(
       new Blob([markdown], { type: "text/markdown;charset=utf-8" }),
       `${baseFileName(resume.personalInfo.fullName)}-resume.md`
@@ -93,6 +97,7 @@ export function DownloadButton() {
       template: templateId,
       method: "markdown",
       sections_filled: countFilledSections(resume),
+      headings_customized: hasCustomHeadings(headingOverrides),
     });
   };
 

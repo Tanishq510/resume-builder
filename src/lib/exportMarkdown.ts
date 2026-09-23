@@ -1,5 +1,6 @@
 import { ResumeData } from "@/types/resume";
 import { SectionId, defaultSectionOrder } from "@/lib/sections";
+import { HeadingKey, resolveHeadings } from "@/lib/sectionHeadings";
 
 function dateRange(start: string, end: string, current: boolean) {
   const endLabel = current ? "Present" : end;
@@ -7,19 +8,12 @@ function dateRange(start: string, end: string, current: boolean) {
   return [start, endLabel].filter(Boolean).join(" – ");
 }
 
-const SECTION_TITLES: Record<SectionId, string> = {
-  experience: "Experience",
-  education: "Education",
-  skills: "Skills",
-  projects: "Projects",
-  certificates: "Certificates",
-  achievements: "Achievements",
-};
-
 export function resumeToMarkdown(
   resume: ResumeData,
-  sectionOrder: SectionId[] = defaultSectionOrder
+  sectionOrder: SectionId[] = defaultSectionOrder,
+  headingOverrides: Partial<Record<HeadingKey, string>> = {}
 ): string {
+  const headings = resolveHeadings(headingOverrides);
   const { personalInfo, experience, education, skills, projects, certificates, achievements } =
     resume;
   const lines: string[] = [];
@@ -37,7 +31,7 @@ export function resumeToMarkdown(
   if (contactParts.length) lines.push(contactParts.join(" | "));
 
   if (personalInfo.summary) {
-    lines.push("", "## Summary", "", personalInfo.summary);
+    lines.push("", `## ${headings.summary}`, "", personalInfo.summary);
   }
 
   const sectionBody: Record<SectionId, () => string[]> = {
@@ -123,7 +117,7 @@ export function resumeToMarkdown(
   sectionOrder.forEach((sectionId) => {
     const body = sectionBody[sectionId]();
     if (body.length) {
-      lines.push("", `## ${SECTION_TITLES[sectionId]}`, "", ...body);
+      lines.push("", `## ${headings[sectionId]}`, "", ...body);
     }
   });
 

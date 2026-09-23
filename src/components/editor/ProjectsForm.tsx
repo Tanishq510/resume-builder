@@ -5,7 +5,9 @@ import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
 import { BulletListEditor } from "@/components/editor/BulletListEditor";
+import { EditableHeading } from "@/components/EditableHeading";
 import { useHighlightNewest } from "@/hooks/useHighlightNewest";
+import { useSectionHeading } from "@/hooks/useSectionHeading";
 
 export function ProjectsForm({
   dragHandle,
@@ -19,10 +21,18 @@ export function ProjectsForm({
   const { highlightId, registerRef } = useHighlightNewest(
     projects.map((p) => p.id)
   );
+  const headingValue = useSectionHeading("projects");
 
   return (
     <SectionCard
       title="Projects"
+      titleContent={
+        <EditableHeading
+          section="projects"
+          value={headingValue}
+          className="text-sm font-semibold text-slate-900"
+        />
+      }
       description="Optional. Useful for showcasing side projects, open source work, or portfolio pieces."
       dragHandle={dragHandle}
       action={

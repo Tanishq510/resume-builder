@@ -5,7 +5,9 @@ import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
 import { BulletListEditor } from "@/components/editor/BulletListEditor";
+import { EditableHeading } from "@/components/EditableHeading";
 import { useHighlightNewest } from "@/hooks/useHighlightNewest";
+import { useSectionHeading } from "@/hooks/useSectionHeading";
 
 export function ExperienceForm({
   dragHandle,
@@ -19,10 +21,18 @@ export function ExperienceForm({
   const { highlightId, registerRef } = useHighlightNewest(
     experience.map((e) => e.id)
   );
+  const headingValue = useSectionHeading("experience");
 
   return (
     <SectionCard
       title="Work experience"
+      titleContent={
+        <EditableHeading
+          section="experience"
+          value={headingValue}
+          className="text-sm font-semibold text-slate-900"
+        />
+      }
       description="List roles in reverse-chronological order. Start bullets with strong action verbs and quantify results where possible."
       dragHandle={dragHandle}
       action={

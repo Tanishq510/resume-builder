@@ -47,6 +47,7 @@ export default function Home() {
   const templateId = useResumeStore((s) => s.templateId);
   const sectionOrder = useResumeStore((s) => s.sectionOrder);
   const reorderSections = useResumeStore((s) => s.reorderSections);
+  const headingOverrides = useResumeStore((s) => s.headingOverrides);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -89,6 +90,7 @@ export default function Home() {
                 resume={resume}
                 templateId={templateId}
                 sectionOrder={sectionOrder}
+                headingOverrides={headingOverrides}
               />
             </div>
           </div>

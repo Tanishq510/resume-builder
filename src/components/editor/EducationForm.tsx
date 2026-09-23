@@ -4,7 +4,9 @@ import { Plus, Trash2 } from "lucide-react";
 import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
+import { EditableHeading } from "@/components/EditableHeading";
 import { useHighlightNewest } from "@/hooks/useHighlightNewest";
+import { useSectionHeading } from "@/hooks/useSectionHeading";
 
 export function EducationForm({
   dragHandle,
@@ -18,10 +20,18 @@ export function EducationForm({
   const { highlightId, registerRef } = useHighlightNewest(
     education.map((e) => e.id)
   );
+  const headingValue = useSectionHeading("education");
 
   return (
     <SectionCard
       title="Education"
+      titleContent={
+        <EditableHeading
+          section="education"
+          value={headingValue}
+          className="text-sm font-semibold text-slate-900"
+        />
+      }
       dragHandle={dragHandle}
       action={
         <button

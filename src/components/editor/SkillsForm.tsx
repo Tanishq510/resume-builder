@@ -5,7 +5,9 @@ import { Plus, Trash2, X } from "lucide-react";
 import { useResumeStore } from "@/store/resumeStore";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Field, TextInput } from "@/components/ui/inputs";
+import { EditableHeading } from "@/components/EditableHeading";
 import { useHighlightNewest } from "@/hooks/useHighlightNewest";
+import { useSectionHeading } from "@/hooks/useSectionHeading";
 
 function SkillChips({
   skills,
@@ -84,10 +86,18 @@ export function SkillsForm({
   const { highlightId, registerRef } = useHighlightNewest(
     skillGroups.map((g) => g.id)
   );
+  const headingValue = useSectionHeading("skills");
 
   return (
     <SectionCard
       title="Skills"
+      titleContent={
+        <EditableHeading
+          section="skills"
+          value={headingValue}
+          className="text-sm font-semibold text-slate-900"
+        />
+      }
       description="List exact keywords from the job description (e.g. 'Project Management' not 'PM') — ATS systems match on exact text. Optionally split them into groups like Frontend, Backend, Cloud."
       dragHandle={dragHandle}
       action={
