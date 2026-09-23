@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Terms & Conditions",
   description:
     "The terms that apply to using this free resume builder.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 const lastUpdated = "August 5, 2026";

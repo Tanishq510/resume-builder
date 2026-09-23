@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://resume-builder-sandy-phi.vercel.app";
+const SITE_URL = "https://createfreeresume.com";
 const SITE_NAME = "ATS Resume Builder";
 const TITLE =
   "Free Resume Builder – Create & Download an ATS-Friendly Resume Online";

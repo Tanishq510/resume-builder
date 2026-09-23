@@ -5,6 +5,9 @@ import { StaticPageShell } from "@/components/StaticPageShell";
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Get in touch with questions, feedback, or bug reports.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 const CONTACT_EMAIL = "tanishqjoshi93@gmail.com";

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = "https://resume-builder-sandy-phi.vercel.app";
+const SITE_URL = "https://createfreeresume.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -199,7 +199,7 @@ export function ResumePreview({
       style={{ fontFamily: v.fontFamily }}
     >
       <header className={v.headerWrapClass}>
-        <h1 className={v.nameClass}>{personalInfo.fullName || "Your Name"}</h1>
+        <p className={v.nameClass}>{personalInfo.fullName || "Your Name"}</p>
         {personalInfo.jobTitle && (
           <p className={v.jobTitleClass}>{personalInfo.jobTitle}</p>
         )}

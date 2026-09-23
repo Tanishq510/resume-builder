@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "How this free resume builder handles your data — in short: it doesn't collect it. Your resume stays in your browser.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 const lastUpdated = "August 5, 2026";

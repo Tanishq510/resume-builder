@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "About Us",
   description:
     "Why this free resume builder exists, how it approaches ATS-friendly formatting, and how it handles your data.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function AboutPage() {
