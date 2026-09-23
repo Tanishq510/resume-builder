@@ -85,7 +85,7 @@ const LOCATION_RE =
 // "City, Region/Country" pair) doesn't risk misreading ordinary text
 // elsewhere, e.g. "Product Manager, Global Sales" as a location.
 const STANDALONE_LOCATION_RE =
-  /^(?:[A-Z][A-Za-z.'-]*(?:\s[A-Z][A-Za-z.'-]*)*,\s*[A-Z][A-Za-z.'-]*(?:\s[A-Z][A-Za-z.'-]*)*|[Rr]emote|[Hh]ybrid|[Oo]nline|[Oo]n-?site)$/;
+  /^(?:[A-Z][A-Za-z.'-]*(?:\s[A-Z][A-Za-z.'-]*)*,\s*[A-Z][A-Za-z.'-]*(?:\s[A-Z][A-Za-z.'-]*)*|[Rr]emote|[Hh]ybrid|[Oo]nline|[Oo]n-?site)(?:\s*\([^()]*\))?$/;
 
 function cleanLine(line: string): string {
   return line.replace(/\s+/g, " ").trim();
@@ -532,7 +532,7 @@ function splitSkillList(text: string): string[] {
   return Array.from(
     new Set(
       text
-        .split(/,|\||•|;|\n/)
+        .split(/,|\||•|·|;|\n/)
         .map((s) => cleanLine(s).replace(/-$/, "").trim())
         .filter((s) => s.length > 1 && s.length < 40)
     )
