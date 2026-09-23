@@ -7,10 +7,22 @@ import { useResumeStore } from "@/store/resumeStore";
 import { ResumeDocument } from "@/components/pdf/ResumeDocument";
 import { resumeToMarkdown } from "@/lib/exportMarkdown";
 import { trackEvent } from "@/lib/analytics";
+import type { ResumeData } from "@/types/resume";
 
 function baseFileName(fullName: string) {
   const base = fullName.trim() || "resume";
   return base.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+}
+
+function countFilledSections(resume: ResumeData) {
+  return [
+    resume.experience,
+    resume.education,
+    resume.skills,
+    resume.projects,
+    resume.certificates,
+    resume.achievements,
+  ].filter((section) => section.length > 0).length;
 }
 
 function downloadBlob(blob: Blob, fileName: string) {
@@ -60,7 +72,11 @@ export function DownloadButton() {
         />
       ).toBlob();
       downloadBlob(blob, `${baseFileName(resume.personalInfo.fullName)}-resume.pdf`);
-      trackEvent("resume_download", { format: "pdf", template: templateId });
+      trackEvent("resume_download", {
+        template: templateId,
+        method: "pdf",
+        sections_filled: countFilledSections(resume),
+      });
     } finally {
       setIsGenerating(false);
     }
@@ -73,7 +89,11 @@ export function DownloadButton() {
       new Blob([markdown], { type: "text/markdown;charset=utf-8" }),
       `${baseFileName(resume.personalInfo.fullName)}-resume.md`
     );
-    trackEvent("resume_download", { format: "markdown", template: templateId });
+    trackEvent("resume_download", {
+      template: templateId,
+      method: "markdown",
+      sections_filled: countFilledSections(resume),
+    });
   };
 
   return (
