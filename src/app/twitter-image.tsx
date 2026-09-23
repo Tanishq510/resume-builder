@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "ATS Resume Builder — Free Resume Builder Online";
+export const alt = "Free Resume Builder — Create & Download an ATS-Friendly Resume Online";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -36,7 +36,7 @@ export default function Image() {
             }}
           />
           <div style={{ display: "flex", fontSize: 28, color: "#94a3b8" }}>
-            ATS Resume Builder
+            createfreeresume.com
           </div>
         </div>
         <div

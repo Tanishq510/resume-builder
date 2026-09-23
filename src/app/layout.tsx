@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_URL = "https://createfreeresume.com";
-const SITE_NAME = "ATS Resume Builder";
+const SITE_NAME = "Free Resume Builder";
 const TITLE =
   "Free Resume Builder – Create & Download an ATS-Friendly Resume Online";
 const DESCRIPTION =
@@ -116,7 +116,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <meta name="apple-mobile-web-app-title" content="Resumer" />
+        <meta name="apple-mobile-web-app-title" content="Free Resume Builder" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
