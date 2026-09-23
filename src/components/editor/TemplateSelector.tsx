@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { useResumeStore } from "@/store/resumeStore";
 import { templateOptions } from "@/lib/templates";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { trackEvent } from "@/lib/analytics";
 
 export function TemplateSelector() {
   const templateId = useResumeStore((s) => s.templateId);
@@ -22,7 +23,10 @@ export function TemplateSelector() {
             <button
               key={option.id}
               type="button"
-              onClick={() => setTemplateId(option.id)}
+              onClick={() => {
+                setTemplateId(option.id);
+                trackEvent("template_selected", { template: option.id });
+              }}
               aria-pressed={isSelected}
               className={`relative rounded-md border p-3 text-left transition-colors ${
                 isSelected

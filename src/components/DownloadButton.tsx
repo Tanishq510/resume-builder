@@ -6,6 +6,7 @@ import { pdf } from "@react-pdf/renderer";
 import { useResumeStore } from "@/store/resumeStore";
 import { ResumeDocument } from "@/components/pdf/ResumeDocument";
 import { resumeToMarkdown } from "@/lib/exportMarkdown";
+import { trackEvent } from "@/lib/analytics";
 
 function baseFileName(fullName: string) {
   const base = fullName.trim() || "resume";
@@ -59,6 +60,7 @@ export function DownloadButton() {
         />
       ).toBlob();
       downloadBlob(blob, `${baseFileName(resume.personalInfo.fullName)}-resume.pdf`);
+      trackEvent("resume_download", { format: "pdf", template: templateId });
     } finally {
       setIsGenerating(false);
     }
@@ -71,6 +73,7 @@ export function DownloadButton() {
       new Blob([markdown], { type: "text/markdown;charset=utf-8" }),
       `${baseFileName(resume.personalInfo.fullName)}-resume.md`
     );
+    trackEvent("resume_download", { format: "markdown", template: templateId });
   };
 
   return (
